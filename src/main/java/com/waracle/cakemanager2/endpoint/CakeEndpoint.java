@@ -44,7 +44,9 @@ public class CakeEndpoint {
     public ResponseEntity<byte[]> downloadCakes() throws JsonProcessingException {
         String cakes = mapper.writeValueAsString(getCakes());
 
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
+        return ResponseEntity.ok()
+
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
                 .body(cakes.getBytes(StandardCharsets.UTF_8));
     }
 
