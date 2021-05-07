@@ -1,0 +1,22 @@
+server:
+  port: 8281
+
+info:
+  app:
+    name: Case API
+    version: 1.0
+
+#todo needed?
+spring:
+  datasource:
+    driver-class-name=org.hsqldb.jdbc.JDBCDriver
+    url=jdbc:hsqldb:hsql://localhost/testdb
+    username=sa
+    password=
+  jpa:
+    hibernate:
+      ddl-auto=update
+
+logging:
+  level:
+    ROOT: INFO
