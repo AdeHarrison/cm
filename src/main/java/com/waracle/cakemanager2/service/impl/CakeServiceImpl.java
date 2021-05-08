@@ -1,14 +1,13 @@
 package com.waracle.cakemanager2.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.waracle.cakemanager2.dto.CakeDTO;
 import com.waracle.cakemanager2.entity.Cake;
 import com.waracle.cakemanager2.repository.CakeRepository;
 import com.waracle.cakemanager2.service.CakeService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CakeServiceImpl implements CakeService {
@@ -58,7 +57,9 @@ public class CakeServiceImpl implements CakeService {
         return cakeDTOS;
     }
 
-    public Cake createCake(CakeDTO cakeDTO) {
-        return cakeRepository.save(new Cake(cakeDTO.getTitle(), cakeDTO.getDescription(), cakeDTO.getImage()));
+    public CakeDTO createCake(CakeDTO cakeDTO) {
+        Cake newCake = cakeRepository.save(new Cake(cakeDTO.getTitle(), cakeDTO.getDescription(), cakeDTO.getImage()));
+
+        return new CakeDTO(newCake);
     }
 }
