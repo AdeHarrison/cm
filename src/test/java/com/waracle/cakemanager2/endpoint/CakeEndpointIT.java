@@ -1,23 +1,28 @@
 package com.waracle.cakemanager2.endpoint;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.waracle.cakemanager2.dto.CakeDTO;
-import com.waracle.cakemanager2.entity.Cake;
-import com.waracle.cakemanager2.repository.CakeRepository;
-import io.restassured.http.ContentType;
-import io.restassured.mapper.TypeRef;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waracle.cakemanager2.dto.CakeDTO;
+import com.waracle.cakemanager2.entity.Cake;
+import com.waracle.cakemanager2.repository.CakeRepository;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import io.restassured.http.ContentType;
+import io.restassured.mapper.TypeRef;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class CakeEndpointIT {
@@ -33,7 +38,7 @@ class CakeEndpointIT {
     }
 
     @Test
-    public void shouldRetrieveAllCakesSuccessfully() {
+    public void shouldReturnAllCakes() {
         int expectedSize = 2;
 
         loadTestCakes();
@@ -41,45 +46,45 @@ class CakeEndpointIT {
         // @formatter:off
         List<Map<String, Object>> actual =
                     given()
-                        .when()
-                            .get(URL)
-                        .then()
-                            .contentType(ContentType.JSON)
-                        .and()
-                        .   statusCode(200)
-                        .and()
+                    .when()
+                        .get(URL)
+                    .then()
+                        .contentType(ContentType.JSON)
+                    .and()
+                    .   statusCode(200)
+                    .and()
                         .extract()
                             .body()
                                 .as(new TypeRef<List<Map<String, Object>>>() {
-                        });
+                    });
         // @formatter:on
 
         assertThat(actual.size(), equalTo(expectedSize));
     }
 
     @Test
-    public void shouldCreateCakeWithGeneratedId() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+    public void shouldCreateCakeWithEmployeeIdId() throws JsonProcessingException {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
         CakeDTO expected = new CakeDTO(6, "title1", "description1", "image1");
 
         // @formatter:off
         String bodyAsString =
                 given()
-                    .when()
-                        .contentType(ContentType.JSON)
-                        .body(testCakeBody)
-                        .post(URL + "/cakes")
-                   .then()
-                        .contentType(ContentType.JSON)
-                    .and()
-                        .statusCode(200)
-                    .and()
-                        .extract()
-                            .body()
-                                .asString();
+                .when()
+                    .contentType(ContentType.JSON)
+                    .body(testCakeBody)
+                    .post(URL + "/cakes")
+               .then()
+                    .contentType(ContentType.JSON)
+                .and()
+                    .statusCode(200)
+                .and()
+                    .extract()
+                        .body()
+                            .asString();
         // @formatter:on
 
+        ObjectMapper mapper = new ObjectMapper();
         CakeDTO actual = mapper.readValue(bodyAsString, CakeDTO.class);
 
         assertThat(actual, equalTo(expected));
@@ -93,34 +98,62 @@ class CakeEndpointIT {
 
         // @formatter:off
         given()
-            .when()
-                .contentType(ContentType.JSON)
-                .body(testCakeBody)
-                .post(URL + "/cakes")
-            .then()
-                .statusCode(500);
+        .when()
+            .contentType(ContentType.JSON)
+            .body(testCakeBody)
+            .post(URL + "/cakes")
+        .then()
+            .statusCode(500);
         // @formatter:on
     }
 
     @Test
-    public void shouldCreateDownloadableJsonFileContainingCakes() {
-        //todo
-        assert false;
+    public void shouldReturnJsonFileContainingCakes() throws IOException {
+        int expectedSize = 2;
+
+        loadTestCakes();
+
+        // @formatter:off
+        byte[] image =
+                given()
+                .when()
+                    .get(URL + "/cakes")
+                .then()
+                    .statusCode(200)
+                    .and()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
+                .extract()
+                    .asByteArray();
+        // @formatter:on
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<CakeDTO> actual = mapper.readValue(image, new TypeReference<>() {
+        });
+
+        assertThat(actual.size(), equalTo(expectedSize));
     }
 
-    //todo move below test utils class?
+    //todo move below to test utils class?
     private void loadTestCakes() {
         loadTestCake1();
         loadTestCake2();
     }
 
     private void loadTestCake1() {
-        cakeRepository.save(new Cake("Lemon cheesecake", "A cheesecake made of lemon",
-                "https://s3-eu-west-1.amazonaws.com/s3.mediafileserver.co.uk/carnation/WebFiles/RecipeImages/lemoncheesecake_lg.jpg"));
+        cakeRepository.save(createCakeDTO1());
     }
 
     private void loadTestCake2() {
-        cakeRepository.save(new Cake("victoria sponge", "sponge with jam",
-                "http://www.bbcgoodfood.com/sites/bbcgoodfood.com/files/recipe_images/recipe-image-legacy-id--1001468_10.jpg"));
+        cakeRepository.save(createCakeDTO2());
+    }
+
+    private Cake createCakeDTO1() {
+        return new Cake("Lemon cheesecake", "A cheesecake made of lemon",
+                "https://s3-eu-west-1.amazonaws.com/s3.mediafileserver.co.uk/carnation/WebFiles/RecipeImages/lemoncheesecake_lg.jpg");
+    }
+
+    private Cake createCakeDTO2() {
+        return new Cake("victoria sponge", "sponge with jam",
+                "http://www.bbcgoodfood.com/sites/bbcgoodfood.com/files/recipe_images/recipe-image-legacy-id--1001468_10.jpg");
     }
 }
