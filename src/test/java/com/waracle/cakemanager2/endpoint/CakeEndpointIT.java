@@ -102,6 +102,12 @@ class CakeEndpointIT {
         // @formatter:on
     }
 
+    @Test
+    public void shouldCreateDownloadableJsonFileContainingCakes() {
+        //todo
+        assert false;
+    }
+
     //todo move below test utils class?
     private void loadTestCakes() {
         loadTestCake1();
