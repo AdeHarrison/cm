@@ -28,12 +28,6 @@ public class CakeEndpoint {
         return cakeService.getAllCakes();
     }
 
-    @GetMapping("/files")
-    public ResponseEntity<byte[]> getFile() {
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
-                .body("lksjdflskdfjl".getBytes(StandardCharsets.UTF_8));
-    }
-
     @GetMapping(path = "/cakes")
     public ResponseEntity<byte[]> downloadCakes() throws JsonProcessingException {
         String cakes = mapper.writeValueAsString(getCakes());

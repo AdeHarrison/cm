@@ -3,18 +3,20 @@ package com.waracle.cakemanager2.dto;
 import com.waracle.cakemanager2.entity.Cake;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CakeDTO {
 
-    private Integer id;
-    private final String title;
-    private final String description;
-    private final String image;
+    private Integer employeeId;
+    private String title;
+    private String description;
+    private String image;
 
     public CakeDTO(Cake cake) {
-        this.id = cake.getEmployeeId();
+        this.employeeId = cake.getEmployeeId();
         this.title = cake.getTitle();
         this.description = cake.getDescription();
         this.image = cake.getImage();
