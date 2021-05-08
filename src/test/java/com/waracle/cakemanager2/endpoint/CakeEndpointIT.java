@@ -140,19 +140,19 @@ class CakeEndpointIT {
     }
 
     private void loadTestCake1() {
-        cakeRepository.save(createCakeDTO1());
+        cakeRepository.save(createCake1());
     }
 
     private void loadTestCake2() {
-        cakeRepository.save(createCakeDTO2());
+        cakeRepository.save(createCake2());
     }
 
-    private Cake createCakeDTO1() {
+    private Cake createCake1() {
         return new Cake("Lemon cheesecake", "A cheesecake made of lemon",
                 "https://s3-eu-west-1.amazonaws.com/s3.mediafileserver.co.uk/carnation/WebFiles/RecipeImages/lemoncheesecake_lg.jpg");
     }
 
-    private Cake createCakeDTO2() {
+    private Cake createCake2() {
         return new Cake("victoria sponge", "sponge with jam",
                 "http://www.bbcgoodfood.com/sites/bbcgoodfood.com/files/recipe_images/recipe-image-legacy-id--1001468_10.jpg");
     }
