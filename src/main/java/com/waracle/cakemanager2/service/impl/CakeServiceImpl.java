@@ -1,7 +1,7 @@
 package com.waracle.cakemanager2.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,11 @@ public class CakeServiceImpl implements CakeService {
     }
 
     public List<CakeDTO> getCakes() {
-        List<CakeDTO> cakeDTOS = new ArrayList<>();
-
-        for (Cake cake : cakeRepository.findAll()) {
-            cakeDTOS.add(new CakeDTO(cake));
-        }
-
-        return cakeDTOS;
+        // @formatter:off
+        return cakeRepository.findAll()
+                .stream().map(CakeDTO::new)
+                    .collect(Collectors.toList());
+        // @formatter:on;
     }
 
     public CakeDTO createCake(CakeDTO cakeDTO) {

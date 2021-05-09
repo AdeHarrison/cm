@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,6 +26,7 @@ import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 class CakeEndpointIT {
 
     private final String URL = "http://localhost:8281";
@@ -55,7 +57,7 @@ class CakeEndpointIT {
                     .and()
                         .extract()
                             .body()
-                                .as(new TypeRef<List<Map<String, Object>>>() {
+                                .as(new TypeRef<>() {
                     });
         // @formatter:on
 
@@ -65,7 +67,7 @@ class CakeEndpointIT {
     @Test
     public void shouldCreateCakeWithEmployeeIdId() throws JsonProcessingException {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
-        CakeDTO expected = new CakeDTO(6, "title1", "description1", "image1");
+        CakeDTO expected = new CakeDTO(1, "title1", "description1", "image1");
 
         // @formatter:off
         String bodyAsString =

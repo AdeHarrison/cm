@@ -45,7 +45,6 @@ class CakeServiceImplTest {
     public void createCake() {
         Cake testCake = createCake1();
         CakeDTO expected = new CakeDTO(createCake1());
-        ;
 
         when(cakeRepository.save(any())).thenReturn(testCake);
 
@@ -59,9 +58,7 @@ class CakeServiceImplTest {
 
         when(cakeRepository.save(any())).thenThrow(ConstraintViolationException.class);
 
-        Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            cakeService.createCake(new CakeDTO());
-        });
+        Assertions.assertThrows(ConstraintViolationException.class, () -> cakeService.createCake(new CakeDTO()));
     }
 
     //todo duplicate

@@ -1,4 +1,4 @@
-package com.waracle.cakemanager2;
+package com.waracle.cakemanager2.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
