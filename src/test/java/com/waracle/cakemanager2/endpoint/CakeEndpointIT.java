@@ -135,7 +135,6 @@ class CakeEndpointIT {
         assertThat(actual.size(), equalTo(expectedSize));
     }
 
-    //todo move below to test utils class?
     private void loadTestCakes() {
         loadTestCake1();
         loadTestCake2();
