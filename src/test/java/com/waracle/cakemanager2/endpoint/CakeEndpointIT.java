@@ -79,7 +79,7 @@ class CakeEndpointIT {
                .then()
                     .contentType(ContentType.JSON)
                 .and()
-                    .statusCode(200)
+                    .statusCode(201)
                 .and()
                     .extract()
                         .body()
