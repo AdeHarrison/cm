@@ -21,7 +21,7 @@ import com.waracle.cakemanager2.entity.Cake;
 import com.waracle.cakemanager2.repository.CakeRepository;
 
 @ExtendWith(MockitoExtension.class)
-class CakeServiceImplTest {
+class CakeServiceTest {
 
     @Mock
     private CakeRepository cakeRepository;

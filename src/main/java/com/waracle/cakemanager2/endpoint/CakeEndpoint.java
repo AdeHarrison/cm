@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waracle.cakemanager2.dto.CakeDTO;
+import com.waracle.cakemanager2.service.CakeService;
 import com.waracle.cakemanager2.service.impl.CakeServiceImpl;
 
 @RestController
@@ -23,9 +24,9 @@ import com.waracle.cakemanager2.service.impl.CakeServiceImpl;
 public class CakeEndpoint {
 
     private final ObjectMapper mapper;
-    private final CakeServiceImpl cakeService;
+    private final CakeService cakeService;
 
-    public CakeEndpoint(ObjectMapper mapper, CakeServiceImpl cakeService) {
+    public CakeEndpoint(ObjectMapper mapper, CakeService cakeService) {
         this.mapper = mapper;
         this.cakeService = cakeService;
     }
@@ -40,7 +41,6 @@ public class CakeEndpoint {
         String cakes = mapper.writeValueAsString(getCakes());
 
         return ResponseEntity.ok()
-
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
                 .body(cakes.getBytes(StandardCharsets.UTF_8));
     }

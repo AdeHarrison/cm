@@ -11,7 +11,7 @@ import com.waracle.cakemanager2.repository.CakeRepository;
 import com.waracle.cakemanager2.service.CakeService;
 
 @Service
-public class CakeServiceImpl implements CakeService {
+public class CakeServiceImpl implements com.waracle.cakemanager2.service.CakeService {
 
     private final CakeRepository cakeRepository;
 
