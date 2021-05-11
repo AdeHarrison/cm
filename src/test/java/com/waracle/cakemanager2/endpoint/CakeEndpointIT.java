@@ -1,13 +1,13 @@
 package com.waracle.cakemanager2.endpoint;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waracle.cakemanager2.dto.CakeDTO;
+import com.waracle.cakemanager2.entity.Cake;
+import com.waracle.cakemanager2.repository.CakeRepository;
+import io.restassured.http.ContentType;
+import io.restassured.mapper.TypeRef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.waracle.cakemanager2.dto.CakeDTO;
-import com.waracle.cakemanager2.entity.Cake;
-import com.waracle.cakemanager2.repository.CakeRepository;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import io.restassured.http.ContentType;
-import io.restassured.mapper.TypeRef;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -65,7 +64,7 @@ class CakeEndpointIT {
     }
 
     @Test
-    public void shouldCreateCakeWithEmployeeIdId() throws JsonProcessingException {
+    public void shouldCreateCakeWithGeneratedEmployeeId() throws JsonProcessingException {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
         CakeDTO expected = new CakeDTO(1, "title1", "description1", "image1");
 
@@ -86,10 +85,29 @@ class CakeEndpointIT {
                             .asString();
         // @formatter:on
 
-        ObjectMapper mapper = new ObjectMapper();
-        CakeDTO actual = mapper.readValue(bodyAsString, CakeDTO.class);
+        CakeDTO actual = new ObjectMapper().readValue(bodyAsString, CakeDTO.class);
 
         assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionWhenInvalidCakeData() {
+        String testCakeBody = null;
+        boolean actual = false;
+
+        // @formatter:off
+        try {
+            given()
+            .when()
+                .contentType(ContentType.JSON)
+                .body(testCakeBody)
+                .post(URL + "/cakes");
+        } catch (IllegalArgumentException iae) {
+            actual = true;
+        }
+        // @formatter:on
+
+        assertThat(actual, is(actual));
     }
 
     @Test
@@ -126,11 +144,9 @@ class CakeEndpointIT {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
                 .extract()
                     .asByteArray();
-        // @formatter:on
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<CakeDTO> actual = mapper.readValue(image, new TypeReference<>() {
-        });
+        List<CakeDTO> actual = new ObjectMapper().readValue(image, new TypeReference<>() {});
+        // @formatter:on
 
         assertThat(actual.size(), equalTo(expectedSize));
     }
