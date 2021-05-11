@@ -21,8 +21,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -66,7 +65,9 @@ class CakeEndpointIT {
     @Test
     public void shouldCreateCakeWithGeneratedEmployeeId() throws JsonProcessingException {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
-        CakeDTO expected = new CakeDTO(1, "title1", "description1", "image1");
+        CakeDTO expected = new CakeDTO(-1, "title1", "description1", "image1");
+
+        List<Cake> l = cakeRepository.findAll();
 
         // @formatter:off
         String bodyAsString =
@@ -87,7 +88,10 @@ class CakeEndpointIT {
 
         CakeDTO actual = new ObjectMapper().readValue(bodyAsString, CakeDTO.class);
 
-        assertThat(actual, equalTo(expected));
+        assertThat(actual.getEmployeeId(), greaterThan(0));
+        assertThat(actual.getTitle(), is(expected.getTitle()));
+        assertThat(actual.getDescription(), is(expected.getDescription()));
+        assertThat(actual.getImage(), is(expected.getImage()));
     }
 
     @Test
