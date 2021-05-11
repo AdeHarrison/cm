@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.util.NestedServletException;
@@ -24,6 +23,8 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class CakeEndpointTest {
 
-    //  @Autowired
     private MockMvc mockMvc;
 
     @Mock
@@ -57,7 +57,7 @@ public class CakeEndpointTest {
         mockMvc
             .perform(
                 get("/")
-                  .accept(MediaType.APPLICATION_JSON))
+                  .accept(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(2)))
             .andExpect(jsonPath("$[0].employeeId", is(1)))
@@ -72,7 +72,7 @@ public class CakeEndpointTest {
     }
 
     @Test
-    public void shouldCreateCakeWithEmployeeIdId() throws Exception {
+    public void shouldCreateCakeWithGeneratedEmployeeId() throws Exception {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
         CakeDTO expected = new CakeDTO(1, "title1", "description1", "image1");
 
@@ -82,9 +82,9 @@ public class CakeEndpointTest {
         mockMvc
                 .perform(
                         post("/cakes")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content(testCakeBody)
-                                .accept(MediaType.APPLICATION_JSON))
+                                .accept(APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.employeeId", is(1)))
                 .andExpect(jsonPath("$.title", is("title1")))
@@ -104,7 +104,7 @@ public class CakeEndpointTest {
         Exception nse = Assertions.assertThrows(NestedServletException.class, () -> mockMvc
             .perform(
                 post("/cakes")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                         .content(testCakeBody)));
 
         assertThat(nse.getCause(), instanceOf(ConstraintViolationException.class));
@@ -120,8 +120,9 @@ public class CakeEndpointTest {
         // @formatter:off
         mockMvc
                 .perform(
-                        get("/")
-                                .accept(MediaType.APPLICATION_JSON))
+                        get("/cakes")
+                                .header(CONTENT_DISPOSITION, "attachment; filename=cakes.json")
+                                .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].employeeId", is(1)))

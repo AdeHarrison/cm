@@ -29,7 +29,7 @@ class CakeServiceTest {
     private CakeServiceImpl cakeService;
 
     @Test
-    public void getCakes() {
+    public void shouldReturnAllCakes() {
         List<Cake> cakes = asList(createCake1(), createCake2());
         List<CakeDTO> expected = asList(new CakeDTO(createCake1()), new CakeDTO(createCake2()));
 
@@ -41,7 +41,7 @@ class CakeServiceTest {
     }
 
     @Test
-    public void createCake() {
+    public void shouldCreateCake() {
         Cake testCake = createCake1();
         CakeDTO expected = new CakeDTO(createCake1());
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waracle.cakemanager2.dto.CakeDTO;
 import com.waracle.cakemanager2.entity.Cake;
 import com.waracle.cakemanager2.repository.CakeRepository;
-import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -49,9 +50,9 @@ class CakeEndpointIT {
                     .when()
                         .get(URL)
                     .then()
-                        .contentType(ContentType.JSON)
+                        .contentType(JSON)
                     .and()
-                    .   statusCode(200)
+                    .   statusCode(OK.value())
                     .and()
                         .extract()
                             .body()
@@ -73,13 +74,13 @@ class CakeEndpointIT {
         String bodyAsString =
                 given()
                 .when()
-                    .contentType(ContentType.JSON)
+                    .contentType(JSON)
                     .body(testCakeBody)
                     .post(URL + "/cakes")
                .then()
-                    .contentType(ContentType.JSON)
+                    .contentType(JSON)
                 .and()
-                    .statusCode(201)
+                    .statusCode(CREATED.value())
                 .and()
                     .extract()
                         .body()
@@ -103,7 +104,7 @@ class CakeEndpointIT {
         try {
             given()
             .when()
-                .contentType(ContentType.JSON)
+                .contentType(JSON)
                 .body(testCakeBody)
                 .post(URL + "/cakes");
         } catch (IllegalArgumentException iae) {
@@ -123,11 +124,11 @@ class CakeEndpointIT {
         // @formatter:off
         given()
         .when()
-            .contentType(ContentType.JSON)
+            .contentType(JSON)
             .body(testCakeBody)
             .post(URL + "/cakes")
         .then()
-            .statusCode(500);
+            .statusCode(INTERNAL_SERVER_ERROR.value());
         // @formatter:on
     }
 
@@ -143,7 +144,7 @@ class CakeEndpointIT {
                 .when()
                     .get(URL + "/cakes")
                 .then()
-                    .statusCode(200)
+                    .statusCode(OK.value())
                     .and()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cakes.json")
                 .extract()
