@@ -3,7 +3,7 @@ server:
 
 info:
   app:
-    name: Case API
+    name: Cake API
     version: 1.0
 
 management:
