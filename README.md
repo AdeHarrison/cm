@@ -39,18 +39,34 @@ This service provides a range of Restful endpoints that enable -
 
 ## Create Cake: `POST /cakes`
 
+I've created a test oauth account in Okta purely for the purposes of this test, to run the command below -
+
+* open https://oidcdebugger.com/
+* enter https://dev-8627717.okta.com/oauth2/default/v1/authorize in "Authorize URI"
+* enter https://oidcdebugger.com/debug in "Redirect URI"
+* enter 0oapyswlxsGd9HK7L5d6 in "Client ID"
+* enter {} in "state"
+* Check "token" checked in "Response Type"
+* Click "Send Request"
+* Login using posting1@tutanota.com / cm2-test
+* Copy token to clipboard
+
 ### With Swagger
 
-[Click here with this service running](http://localhost:8281/swagger-ui.html#!/cake45endpoint/createCakeUsingPOST)
+* [Click here with this service running](http://localhost:8281/swagger-ui.html#!/cake45endpoint/createCakeUsingPOST)
 
-#### enter Cake JSON data and click "Try it out"
+* Paste token into the "Authorization" field
+
+* enter Cake JSON data and click "Try it out"
 
 ### With curl
 
-#### e.g
+* Paste token into {paste_token_here} below and run
 
-curl -X POST -H "Content-Type: application/json" -d '{"title": "title 1", "description": "description 1", "image": "
-image 1"}' http://localhost:8281/cakes/
+* curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer {paste_token_here}" -d '{"title": "title 1"
+  , "description": "description 1", "image": "image 1"}' http://localhost:8281/cakes/
+
+Please excuse the flagrant security breaches...
 
 # Building the service
 
