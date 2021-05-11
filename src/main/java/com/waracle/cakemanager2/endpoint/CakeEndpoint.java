@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping(path = "/")
@@ -43,7 +44,7 @@ public class CakeEndpoint {
     @PreAuthorize("isAuthenticated")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")})
     @PostMapping(path = "/cakes")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public CakeDTO createCake(@RequestBody CakeDTO cakeDTO) {
         return cakeService.createCake(cakeDTO);
     }

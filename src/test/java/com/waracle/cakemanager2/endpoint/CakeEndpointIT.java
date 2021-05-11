@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waracle.cakemanager2.dto.CakeDTO;
 import com.waracle.cakemanager2.entity.Cake;
 import com.waracle.cakemanager2.repository.CakeRepository;
+import io.jsonwebtoken.Jwts;
 import io.restassured.mapper.TypeRef;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
-
+import io.jsonwebtoken.SignatureAlgorithm;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+//...
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpStatus.*;
@@ -67,15 +77,17 @@ class CakeEndpointIT {
     public void shouldCreateCakeWithGeneratedEmployeeId() throws JsonProcessingException {
         String testCakeBody = "{\"title\": \"title1\", \"description\": \"description1\", \"image\": \"image1\"}";
         CakeDTO expected = new CakeDTO(-1, "title1", "description1", "image1");
+        String jwtToken = generateToken();
 
         List<Cake> l = cakeRepository.findAll();
 
         // @formatter:off
         String bodyAsString =
                 given()
-                .when()
+                        .header("Authorization","Bearer " + jwtToken)
                     .contentType(JSON)
                     .body(testCakeBody)
+                        .when()
                     .post(URL + "/cakes")
                .then()
                     .contentType(JSON)
@@ -154,6 +166,39 @@ class CakeEndpointIT {
         // @formatter:on
 
         assertThat(actual.size(), equalTo(expectedSize));
+    }
+
+    private String generateToken() {
+        String e = Base64.getEncoder().encodeToString("fu2RTF9U1ja-WAn4r-7429f9j_ZpnnDbDuexIoMQ".getBytes());
+
+        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(e),
+                SignatureAlgorithm.HS256.getJcaName());
+
+        Instant now = Instant.now();
+        String jwtToken = Jwts.builder()
+                .claim("name", "Jane Doe")
+                .claim("email", "jane@example.com")
+                .setSubject("jane")
+                .setId(UUID.randomUUID().toString())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plus(5l, ChronoUnit.MINUTES)))
+                .signWith(hmacKey)
+                .compact();
+
+        return jwtToken;
+//
+//
+//        Instant now = Instant.now();
+//
+//        String x = Jwts.builder()
+//                .claim("name", "cm2 test")
+//                .setSubject("tester")
+//                .setId(UUID.randomUUID().toString())
+//                .setIssuedAt(Date.from(now))
+//                .setExpiration(Date.from(now.plus(5l, MINUTES)))
+//                .compact();
+//
+//        return x;
     }
 
     private void loadTestCakes() {

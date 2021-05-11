@@ -40,7 +40,7 @@ public class CakeManager2Application extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SecurityConfiguration securityInfo() {
-        return new SecurityConfiguration(null, null, null, null, "", HEADER, "Authorization", "");
+        return new SecurityConfiguration(null, "fu2RTF9U1ja-WAn4r-7429f9j_ZpnnDbDuexIoMQ", null, null, "", HEADER, "Authorization", "");
     }
 
     private ApiKey apiKey() {
