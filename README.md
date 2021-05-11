@@ -8,7 +8,9 @@ This service provides a range of Restful endpoints that enable -
 * Production of a downloadable JSON file of Cakes
 * Manual creation of Cakes
 
-##Please Note: All commands below must be run from the project root directory
+###Please Note:
+####The app runs on port 8182 e.g localhost:8182
+####All commands below must be run from the project root directory
 
 # Endpoints
 
@@ -47,6 +49,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"title": "title 1", "descr
 
 #Running the service
 ##mvn spring-boot:run
+* Enter localhost:8182 in Browser
 
 #Building a docker image
 ##mvn spring-boot:build-image
@@ -64,4 +67,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"title": "title 1", "descr
 ###mvn test
 
 ## To run Integration tests:
+###mvn verify
+
+## Common exposted Actuator Endpoints:
 ###mvn verify
