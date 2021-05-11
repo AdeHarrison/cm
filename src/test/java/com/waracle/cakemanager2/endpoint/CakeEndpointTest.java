@@ -101,13 +101,11 @@ public class CakeEndpointTest {
         when(cakeService.createCake(any(CakeDTO.class))).thenThrow(ConstraintViolationException.class);
 
         // @formatter:off
-        Exception nse = Assertions.assertThrows(NestedServletException.class, () -> {
-            mockMvc
-                .perform(
-                    post("/cakes")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(testCakeBody));
-        });
+        Exception nse = Assertions.assertThrows(NestedServletException.class, () -> mockMvc
+            .perform(
+                post("/cakes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testCakeBody)));
 
         assertThat(nse.getCause(), instanceOf(ConstraintViolationException.class));
     }

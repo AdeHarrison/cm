@@ -57,9 +57,7 @@ class CakeServiceTest {
 
         when(cakeRepository.save(any(Cake.class))).thenThrow(ConstraintViolationException.class);
 
-        Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            cakeService.createCake(new CakeDTO());
-        });
+        Assertions.assertThrows(ConstraintViolationException.class, () -> cakeService.createCake(new CakeDTO()));
     }
 
     private Cake createCake1() {

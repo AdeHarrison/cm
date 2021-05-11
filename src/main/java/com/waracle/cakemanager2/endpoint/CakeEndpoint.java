@@ -1,23 +1,16 @@
 package com.waracle.cakemanager2.endpoint;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waracle.cakemanager2.dto.CakeDTO;
 import com.waracle.cakemanager2.service.CakeService;
-import com.waracle.cakemanager2.service.impl.CakeServiceImpl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/")
